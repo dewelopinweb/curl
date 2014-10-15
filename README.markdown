@@ -15,10 +15,9 @@ or add to composer.json
             "package": {
                 "name": "customlib/curl",
                 "version": "1.0",
-                "source": {
-                    "url": "https://github.com/dewelopinweb/curl",
-                    "type": "git",
-                    "reference": "https://github.com/dewelopinweb/curl"
+                "dist": {
+                    "url": "https://github.com/dewelopinweb/curl/archive/master.zip",
+                    "type": "zip"
                 },
                 "autoload": {
                     "classmap": ["lib/"]
