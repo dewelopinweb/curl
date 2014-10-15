@@ -7,6 +7,32 @@ A basic CURL wrapper for PHP (see [http://php.net/curl](http://php.net/curl) for
 
 Click the `download` link above or `git clone git://github.com/shuber/curl.git`
 
+or add to composer.json
+
+    "repositories": [
+        {
+            "type": "package",
+            "package": {
+                "name": "customlib/curl",
+                "version": "1.0",
+                "source": {
+                    "url": "https://github.com/dewelopinweb/curl",
+                    "type": "git",
+                    "reference": "https://github.com/dewelopinweb/curl"
+                },
+                "autoload": {
+                    "classmap": ["lib/"]
+                }
+            }
+        }
+    ]
+    
+and
+
+    "require": {
+        "customlib/curl": "*"
+    }
+
 
 ## Usage
 
@@ -133,8 +159,3 @@ You can set/override many different options for CURL requests (see the [curl_set
 Uses [ztest](http://github.com/jaz303/ztest), simply download it to `path/to/curl/test/ztest` (or anywhere else in your php include_path)
 
 Then run `test/runner.php`
-
-
-## Contact
-
-Problems, comments, and suggestions all welcome: [shuber@huberry.com](mailto:shuber@huberry.com)
