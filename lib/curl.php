@@ -1,5 +1,5 @@
 <?php
-namespace Curl;
+namespace customsoft;
 /**
  * A basic CURL wrapper
  *
@@ -166,10 +166,10 @@ class Curl {
         
         $response = curl_exec($this->request);
         if (!$response) {
-          throw new \Curl\CurlException(curl_error($this->request), curl_errno($this->request));
+          throw new CurlException(curl_error($this->request), curl_errno($this->request));
         }
         
-        $response = new \Curl\CurlResponse($response);
+        $response = new CurlResponse($response);
         
         curl_close($this->request);
         

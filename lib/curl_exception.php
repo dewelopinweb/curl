@@ -1,5 +1,5 @@
 <?php
-namespace Curl;
+namespace customsoft;
 
 class CurlException extends \Exception
 {
@@ -55,7 +55,7 @@ class CurlException extends \Exception
 		CURLE_RECV_ERROR => 'CURLE_RECV_ERROR',
 		CURLE_SEND_ERROR => 'CURLE_SEND_ERROR',
 		CURLE_SHARE_IN_USE => 'CURLE_SHARE_IN_USE',
-		CURLE_SSH => 'CURLE_SSH',
+		//CURLE_SSH => 'CURLE_SSH',
 		CURLE_SSL_CACERT => 'CURLE_SSL_CACERT',
 		CURLE_SSL_CERTPROBLEM => 'CURLE_SSL_CERTPROBLEM',
 		CURLE_SSL_CIPHER => 'CURLE_SSL_CIPHER',
@@ -75,7 +75,7 @@ class CurlException extends \Exception
 	function __construct( $curl_error_message, $curl_error_code )
 	{
 		if( ! array_key_exists( $curl_error_code, self::$curl_errors ) )
-			throw new Exception( "Unknown \$curl_error_code: $curl_error_code" );
+			throw new \Exception( "Unknown \$curl_error_code: $curl_error_code" );
 		
 		parent::__construct( self::$curl_errors[$curl_error_code].": $curl_error_message", $curl_error_code );
 	}
