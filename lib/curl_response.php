@@ -35,6 +35,32 @@ class CurlResponse {
      * @param string $response
     **/
     function __construct($response) {
+        $split_response = explode("\r\n\r\n", $response);
+
+        if (count($split_response) === 1) {
+            $headers_string = "";
+            $body_string = $split_response[0];
+        } else {
+            $headers_string = $split_response[count($split_response) - 2];
+            $body_string = $split_response[count($split_response) - 1];
+        }
+
+        $headers = explode("\r\n", $headers_string);
+        $this->body = $body_string;
+
+        # Extract the version and status from the first header
+        $version_and_status = array_shift($headers);
+        preg_match_all('#HTTP/(\d[\.\d]?)\s((\d\d\d)\s((.*?)(?=HTTP)|.*))#', $version_and_status, $matches);
+        $this->headers['Http-Version'] = array_pop($matches[1]);
+        $this->headers['Status-Code'] = array_pop($matches[3]);
+        $this->headers['Status'] = array_pop($matches[2]);
+
+        # Convert headers into an associative array
+        foreach ($headers as $header) {
+            preg_match('#(.*?)\:\s(.*)#', $header, $matches);
+            $this->headers[$matches[1]] = $matches[2];
+        }
+        /*
         # Headers regex
         $pattern = '#HTTP/\d\.\d.*?$.*?\r\n\r\n#ims';
 
@@ -63,6 +89,7 @@ class CurlResponse {
             preg_match('#(.*?)\:\s(.*)#', $header, $matches);
             $this->headers[$matches[1]] = $matches[2];
         }
+        */
     }
 
     /**
