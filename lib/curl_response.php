@@ -35,18 +35,20 @@ class CurlResponse {
      * @param string $response
     **/
     function __construct($response) {
-        $split_response = explode("\r\n\r\n", $response);
+        $pattern = '#HTTP/\d[\.\d]?.*?$.*?\r\n\r\n#ims';
 
-        if (count($split_response) === 1) {
-            $headers_string = "";
-            $body_string = $split_response[0];
-        } else {
-            $headers_string = $split_response[count($split_response) - 2];
-            $body_string = $split_response[count($split_response) - 1];
+        # Extract headers from the response
+        preg_match_all($pattern, $response, $matches);
+        $headers_string = array_pop($matches[0]);
+        $headers = explode("\r\n", str_replace("\r\n\r\n", '', $headers_string));
+
+        # Inlude all received headers in the $headers_string
+        while (count($matches[0])) {
+            $headers_string = array_pop($matches[0]).$headers_string;
         }
 
-        $headers = explode("\r\n", $headers_string);
-        $this->body = $body_string;
+        # Remove all headers from the response body
+        $this->body = str_replace($headers_string, '', $response);
 
         # Extract the version and status from the first header
         $version_and_status = array_shift($headers);
@@ -57,39 +59,13 @@ class CurlResponse {
 
         # Convert headers into an associative array
         foreach ($headers as $header) {
+            $split_header = explode(":", $header);
             preg_match('#(.*?)\:\s(.*)#', $header, $matches);
-            $this->headers[$matches[1]] = $matches[2];
+
+            if (count($matches)>1) {
+                $this->headers[$matches[1]] = $matches[2];
+            }
         }
-        /*
-        # Headers regex
-        $pattern = '#HTTP/\d\.\d.*?$.*?\r\n\r\n#ims';
-
-        # Extract headers from response
-        preg_match_all($pattern, $response, $matches);
-        $headers_string = array_pop($matches[0]);
-        $headers = explode("\r\n", str_replace("\r\n\r\n", '', $headers_string));
-
-        # Inlude all received headers in the $headers_string
-        while (count($matches[0])) {
-          $headers_string = array_pop($matches[0]).$headers_string;
-        }
-
-        # Remove all headers from the response body
-        $this->body = str_replace($headers_string, '', $response);
-
-        # Extract the version and status from the first header
-        $version_and_status = array_shift($headers);
-        preg_match_all('#HTTP/(\d\.\d)\s((\d\d\d)\s((.*?)(?=HTTP)|.*))#', $version_and_status, $matches);
-        $this->headers['Http-Version'] = array_pop($matches[1]);
-        $this->headers['Status-Code'] = array_pop($matches[3]);
-        $this->headers['Status'] = array_pop($matches[2]);
-
-        # Convert headers into an associative array
-        foreach ($headers as $header) {
-            preg_match('#(.*?)\:\s(.*)#', $header, $matches);
-            $this->headers[$matches[1]] = $matches[2];
-        }
-        */
     }
 
     /**
